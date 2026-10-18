@@ -109,5 +109,38 @@ class Program
         Console.WriteLine("Área de destino: " + documento.Area);
     }
 
-    static void BuscarDocumento() { }
+    static void BuscarDocumento()
+    {
+        Console.WriteLine("\n--- REGISTROS EXISTENTES ---");
+        if (documentos.Count == 0)
+        {
+            Console.WriteLine("No hay documentos registrados aún.");
+            return;
+        }
+
+        Console.WriteLine("{0,-20} | {1,-15} | {2,-15}", "REMITENTE", "TIPO", "CÓDIGO");
+        Console.WriteLine(new string('-', 56));
+        foreach (var doc in documentos)
+        {
+            Console.WriteLine("{0,-20} | {1,-15} | {2,-15}", doc.Nombre, doc.Tipo, doc.Codigo);
+        }
+
+        Console.Write("\nIngrese el código de seguimiento a buscar: ");
+        string codigo = Console.ReadLine();
+
+        foreach (Documento documento in documentos)
+        {
+            if (documento.Codigo.Equals(codigo, StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine("\n--- DETALLE DEL DOCUMENTO ---");
+                Console.WriteLine("Código: " + documento.Codigo);
+                Console.WriteLine("DNI: " + documento.DNI);
+                Console.WriteLine("Remitente: " + documento.Nombre);
+                Console.WriteLine("Asunto: " + documento.Asunto);
+                Console.WriteLine("Área de destino: " + documento.Area);
+                return;
+            }
+        }
+        Console.WriteLine("El código ingresado no existe.");
+    }
 }
