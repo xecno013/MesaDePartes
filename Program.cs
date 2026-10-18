@@ -19,6 +19,8 @@ class Program
 
     static void Main()
     {
+        CargarCSV(); // Carga automática al iniciar
+
         int opcion;
         do
         {
@@ -103,6 +105,7 @@ class Program
         else documento.Area = "Direccion";
 
         documentos.Add(documento);
+        GuardarCSV(documento); // Guardar en archivo
 
         Console.WriteLine("\nDocumento registrado correctamente.");
         Console.WriteLine("Código de seguimiento: " + documento.Codigo);
@@ -142,5 +145,41 @@ class Program
             }
         }
         Console.WriteLine("El código ingresado no existe.");
+    }
+
+    static void GuardarCSV(Documento documento)
+    {
+        bool existe = File.Exists(archivo);
+        using (StreamWriter writer = new StreamWriter(archivo, true))
+        {
+            if (!existe)
+                writer.WriteLine("Codigo,DNI,Nombre,Tipo,Asunto,Area");
+            else
+                writer.WriteLine(); // Evita que se pegue al documento anterior
+
+            writer.Write($"{documento.Codigo},{documento.DNI},{documento.Nombre}," +
+                             $"{documento.Tipo},{documento.Asunto},{documento.Area}");
+        }
+    }
+
+    static void CargarCSV()
+    {
+        if (File.Exists(archivo))
+        {
+            string[] lineas = File.ReadAllLines(archivo);
+            for (int i = 1; i < lineas.Length; i++)
+            {
+                string[] datos = lineas[i].Split(',');
+                if (datos.Length == 6)
+                {
+                    Documento doc = new Documento
+                    {
+                        Codigo = datos[0], DNI = datos[1], Nombre = datos[2],
+                        Tipo = datos[3], Asunto = datos[4], Area = datos[5]
+                    };
+                    documentos.Add(doc);
+                }
+            }
+        }
     }
 }
