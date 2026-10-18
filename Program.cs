@@ -45,6 +45,69 @@ class Program
         } while (opcion != 3);
     }
 
-    static void RegistrarDocumento() { }
+    static void RegistrarDocumento()
+    {
+        Documento documento = new Documento();
+        Console.WriteLine("\n--- NUEVO REGISTRO ---");
+
+        bool dniValido = false;
+        do
+        {
+            Console.Write("Ingrese DNI (8 dígitos): ");
+            string inputDNI = Console.ReadLine();
+            if (inputDNI.Length == 8 && long.TryParse(inputDNI, out _))
+            {
+                documento.DNI = inputDNI;
+                dniValido = true;
+            }
+            else Console.WriteLine("Error: El DNI debe contener exactamente 8 números.");
+        } while (!dniValido);
+
+        bool nombreValido = false;
+        do
+        {
+            Console.Write("Ingrese nombre del remitente: ");
+            documento.Nombre = Console.ReadLine().Trim();
+            if (!string.IsNullOrWhiteSpace(documento.Nombre) && documento.Nombre.Length >= 3)
+                nombreValido = true;
+            else Console.WriteLine("Error: El nombre no puede estar vacío o ser muy corto.");
+        } while (!nombreValido);
+
+        bool asuntoValido = false;
+        do
+        {
+            Console.Write("Ingrese asunto del documento: ");
+            documento.Asunto = Console.ReadLine().Trim();
+            if (!string.IsNullOrWhiteSpace(documento.Asunto))
+                asuntoValido = true;
+            else Console.WriteLine("Error: El asunto es obligatorio.");
+        } while (!asuntoValido);
+
+        bool tipoValido = false;
+        do
+        {
+            Console.Write("Ingrese tipo de documento (Academico / Conducta / Otro): ");
+            string inputTipo = Console.ReadLine().Trim().ToLower();
+            if (inputTipo == "academico" || inputTipo == "conducta" || inputTipo == "otro")
+            {
+                documento.Tipo = char.ToUpper(inputTipo[0]) + inputTipo.Substring(1); 
+                tipoValido = true;
+            }
+            else Console.WriteLine("Error: Tipo inválido. Debe escribir 'Academico', 'Conducta' u 'Otro'.");
+        } while (!tipoValido);
+
+        documento.Codigo = "DOC-2026-" + (documentos.Count + 1);
+
+        if (documento.Tipo.ToLower() == "academico") documento.Area = "Secretaria";
+        else if (documento.Tipo.ToLower() == "conducta") documento.Area = "Tutoria";
+        else documento.Area = "Direccion";
+
+        documentos.Add(documento);
+
+        Console.WriteLine("\nDocumento registrado correctamente.");
+        Console.WriteLine("Código de seguimiento: " + documento.Codigo);
+        Console.WriteLine("Área de destino: " + documento.Area);
+    }
+
     static void BuscarDocumento() { }
 }
